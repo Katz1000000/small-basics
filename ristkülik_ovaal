@@ -1,0 +1,86 @@
+rectangleW = 100
+rectangleH = 80
+ovalW = 100
+ovalH = 80
+
+GraphicsWindow.BrushColor = "LightGray"
+rectFieldX = 300
+rectFieldY = 50
+rectField = Shapes.AddRectangle(rectangleW, rectangleH)
+Shapes.Move(rectField, rectFieldX, rectFieldY)
+
+ovalFieldX = 300
+ovalFieldY = 200
+ovalField = Shapes.AddEllipse(ovalW, ovalH)
+Shapes.Move(ovalField, ovalFieldX, ovalFieldY)
+
+GraphicsWindow.BrushColor = "Red"
+rectangle = Shapes.AddRectangle(rectangleW, rectangleH)
+rectX = 50
+rectY = 50
+Shapes.Move(rectangle, rectX, rectY)
+
+GraphicsWindow.BrushColor = "Blue"
+oval = Shapes.AddEllipse(ovalW, ovalH)
+ovalX = 50
+ovalY = 200
+Shapes.Move(oval, ovalX, ovalY)
+
+GraphicsWindow.BrushColor = "Green"
+checkButton = Shapes.AddRectangle(100, 40)
+Shapes.Move(checkButton, 450, 300)
+
+selectedShape = ""
+
+GraphicsWindow.MouseDown = OnMouseDown
+GraphicsWindow.MouseUp = OnMouseUp
+GraphicsWindow.MouseMove = OnMouseMove
+
+Sub OnMouseDown
+  x = GraphicsWindow.MouseX
+  y = GraphicsWindow.MouseY
+
+  If x>rectX And x<rectX+rectangleW And y>rectY And y<rectY+rectangleH Then
+    selectedShape = "rectangle"
+
+  ElseIf x>ovalX And x<ovalX+ovalW And y>ovalY And y<ovalY+ovalH Then
+    selectedShape = "oval"
+  EndIf
+EndSub
+
+Sub OnMouseUp
+  selectedShape = ""
+  
+x = GraphicsWindow.MouseX
+y = GraphicsWindow.MouseY
+If x>450 And x<550 And y>300 And y<340 Then  
+    rectCenterX = rectX + rectangleW/2
+    rectCenterY = rectY + rectangleH/2
+    ovalCenterX = ovalX + ovalW/2
+    ovalCenterY = ovalY + ovalH/2
+    
+    If rectCenterX>rectFieldX And rectCenterX<rectFieldX+rectangleW And rectCenterY>rectFieldY And rectCenterY<rectFieldY+rectangleH Then
+      If ovalCenterX>ovalFieldX And ovalCenterX<ovalFieldX+ovalW And ovalCenterY>ovalFieldY And ovalCenterY<ovalFieldY+ovalH Then
+        GraphicsWindow.ShowMessage("Õige!", "Tulemus")
+      Else
+        GraphicsWindow.ShowMessage("Vale!", "Tulemus")
+      EndIf
+    Else
+      GraphicsWindow.ShowMessage("Vale!", "Tulemus")
+    EndIf
+   EndIf
+ EndSub
+
+Sub OnMouseMove
+  x = GraphicsWindow.MouseX
+  y = GraphicsWindow.MouseY
+  If selectedShape = "rectangle" Then
+    rectX = x - rectangleW/2
+    rectY = y - rectangleH/2
+    Shapes.Move(rectangle, rectX, rectY)
+  ElseIf selectedShape = "oval" Then
+    ovalX = x - ovalW/2
+    ovalY = y - ovalH/2
+    Shapes.Move(oval, ovalX, ovalY)
+  EndIf
+EndSub
