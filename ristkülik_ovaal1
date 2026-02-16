@@ -1,0 +1,146 @@
+' --- Kujundite suurused ---
+rectangleW = 100
+rectangleH = 80
+ovalW = 100
+ovalH = 80
+
+' --- Kastide suurused ---
+boxW = 150
+boxH = 120
+
+GraphicsWindow.BackgroundColor = "White"
+
+' --- Parempoolsed kastid ---
+
+' Ülemine kast (Ristkülik)
+rectBoxX = 300
+rectBoxY = 50
+GraphicsWindow.PenColor = "Black"    ' Raami värv
+GraphicsWindow.BrushColor = "White"  ' Täitevärv
+rectBox = Shapes.AddRectangle(boxW, boxH)
+Shapes.Move(rectBox, rectBoxX, rectBoxY)
+GraphicsWindow.DrawText(rectBoxX + 40, rectBoxY - 30, "Ristkülik")
+
+' Alumine kast (Ovaal)
+ovalBoxX = 300
+ovalBoxY = 200
+GraphicsWindow.PenColor = "Black"
+GraphicsWindow.BrushColor = "White"
+ovalBox = Shapes.AddRectangle(boxW, boxH)
+Shapes.Move(ovalBox, ovalBoxX, ovalBoxY)
+GraphicsWindow.DrawText(ovalBoxX + 50, ovalBoxY - 30, "Ovaal")
+
+' --- Vasakul olevad lohistatavad kujundid ---
+GraphicsWindow.BrushColor = "Red"
+rectangle = Shapes.AddRectangle(rectangleW, rectangleH)
+rectX = 50
+rectY = 50
+Shapes.Move(rectangle, rectX, rectY)
+
+GraphicsWindow.BrushColor = "Blue"
+oval = Shapes.AddEllipse(ovalW, ovalH)
+ovalX = 50
+ovalY = 200
+Shapes.Move(oval, ovalX, ovalY)
+
+' --- Vastuse kast --- 
+answerBoxX = 550
+answerBoxY = 150
+answerBoxW = 250
+answerBoxH = 100
+GraphicsWindow.PenColor = "Black"
+GraphicsWindow.BrushColor = "White"
+answerBox = Shapes.AddRectangle(answerBoxW, answerBoxH)
+Shapes.Move(answerBox, answerBoxX, answerBoxY)
+
+' --- Tekst "Vastus" kasti kohale ---
+GraphicsWindow.DrawText(answerBoxX + 40, answerBoxY - 25, "Vastus")
+
+' --- Tekst Õige/Vale kasti sees ---
+answerText = Shapes.AddText("")   ' Algul tühi
+Shapes.Move(answerText, answerBoxX + 40, answerBoxY + 15)
+
+' --- Kontrollnupp --- (paremale)
+checkButtonX = 550
+checkButtonY = 280
+GraphicsWindow.BrushColor = "Green"
+checkButton = Shapes.AddRectangle(100, 40)
+Shapes.Move(checkButton, checkButtonX, checkButtonY)
+GraphicsWindow.DrawText(checkButtonX + 10, checkButtonY + 10, "Kontrolli")
+
+' --- Tekst "Vastus" kasti kohale ---
+GraphicsWindow.DrawText(answerBoxX + 40, answerBoxY - 25, "Vastus")
+
+' --- Tekst Õige/Vale kasti sees ---
+answerText = Shapes.AddText("")   ' Algul tühi
+Shapes.Move(answerText, answerBoxX + 40, answerBoxY + 15)
+
+' --- Muutujad lohistamiseks ---
+selectedShape = ""
+
+' --- Hiire sündmused ---
+GraphicsWindow.MouseDown = OnMouseDown
+GraphicsWindow.MouseUp = OnMouseUp
+GraphicsWindow.MouseMove = OnMouseMove
+
+Sub OnMouseDown
+  x = GraphicsWindow.MouseX
+  y = GraphicsWindow.MouseY
+
+  If x>rectX And x<rectX+rectangleW And y>rectY And y<rectY+rectangleH Then
+    selectedShape = "rectangle"
+  ElseIf x>ovalX And x<ovalX+ovalW And y>ovalY And y<ovalY+ovalH Then
+    selectedShape = "oval"
+  EndIf
+EndSub
+
+Sub OnMouseUp
+  selectedShape = ""
+  
+  x = GraphicsWindow.MouseX
+  y = GraphicsWindow.MouseY
+  
+  ' Kontrolli nupp
+  If x>checkButtonX And x<checkButtonX+100 And y>checkButtonY And y<checkButtonY+40 Then  
+      rectCenterX = rectX + rectangleW/2
+      rectCenterY = rectY + rectangleH/2
+      ovalCenterX = ovalX + ovalW/2
+      ovalCenterY = ovalY + ovalH/2
+      
+      ' Kas ristkülik on ülemises kastis?
+      If rectCenterX>rectBoxX And rectCenterX<rectBoxX+boxW And rectCenterY>rectBoxY And rectCenterY<rectBoxY+boxH Then
+        rectCorrect = "True"
+      Else
+        rectCorrect = "False"
+      EndIf
+      
+      ' Kas ovaal on alumises kastis?
+      If ovalCenterX>ovalBoxX And ovalCenterX<ovalBoxX+boxW And ovalCenterY>ovalBoxY And ovalCenterY<ovalBoxY+boxH Then
+        ovalCorrect = "True"
+      Else
+        ovalCorrect = "False"
+      EndIf
+      
+      ' Näita tulemus vastuse kastis
+     If rectCorrect="True" And ovalCorrect="True" Then
+    Shapes.SetText(answerText, "Õige!")
+    Else
+    Shapes.SetText(answerText, "Vale!")
+    EndIf
+   EndIf
+EndSub
+
+Sub OnMouseMove
+  x = GraphicsWindow.MouseX
+  y = GraphicsWindow.MouseY
+  
+  If selectedShape = "rectangle" Then
+    rectX = x - rectangleW/2
+    rectY = y - rectangleH/2
+    Shapes.Move(rectangle, rectX, rectY)
+  ElseIf selectedShape = "oval" Then
+    ovalX = x - ovalW/2
+    ovalY = y - ovalH/2
+    Shapes.Move(oval, ovalX, ovalY)
+  EndIf
+EndSub
